@@ -1,0 +1,112 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        applicationId "com.netease.vcloud.live"
+        minSdkVersion 18
+        targetSdkVersion 28
+        versionCode 5
+        versionName "3.0.0"
+        multiDexEnabled true
+    }
+
+    repositories {  //本地aar方式
+        flatDir {
+            dirs 'libs' //this way we can find the .aar file in libs folder
+        }
+        maven { url 'https://jitpack.io' }
+    }
+
+    //签名相关
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+        release {
+            storeFile file("release.keystore")
+            storePassword "netease"
+            keyAlias "DAWN"
+            keyPassword "netease"
+        }
+    }
+
+    buildTypes {
+        release {
+            debuggable true
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            debuggable true
+            minifyEnabled false
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    lintOptions {
+        disable 'InvalidPackage'
+        abortOnError false
+    }
+
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            jniLibs.srcDirs = ['libs']
+            assets.srcDirs = ['src/main/assets']
+            res.srcDirs = ['src/main/res', 'src/main/res-shortvideo']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: '*.jar', dir: 'libs')
+    implementation fileTree(include: '*.jar', dir: 'jniLibs')
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    // 二维码库
+    implementation(name: 'zxing-1.8.4', ext: 'aar')
+    implementation(name: 'barcodescanner-core-1.8.4', ext: 'aar')
+    api project(':uikit')
+    implementation files('libs/nos-android-sdk-allin-2.0.3.jar')
+    implementation files('libs/glide-3.7.0.jar')
+    implementation files('libs/vcloudUpload.jar')
+    implementation 'com.github.Jay-Goo:RangeSeekBar:v1.0.7'
+    implementation project(path: ':Fulive')
+    implementation files('libs/Livestreaming-3.4.0.jar')
+//    implementation files('libs/VideoEffect-3.4.0.jar')
+
+//    implementation 'com.alibaba:fastjson:1.1.34.android'
+//    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+
+    // 基础功能 (必需)
+//    implementation 'com.netease.nimlib:basesdk:6.1.1'
+    // 音视频和互动白板服务需要
+    implementation 'com.netease.nimlib:nrtc:6.1.1'
+    // 音视频需要
+//    implementation 'com.netease.nimlib:avchat:6.1.1'
+    // 聊天室需要
+//    implementation 'com.netease.nimlib:chatroom:6.1.1'
+    // 互动白板服务需要
+//    implementation 'com.netease.nimlib:rts:6.1.1'
+    // 全文检索服务需要
+//    implementation 'com.netease.nimlib:lucene:6.1.1'
+
+
+}
+
+/*
+configurations{
+    all*.exclude group:'com.alibaba:fastjson:1.1.34.android'
+    all*.exclude group:'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+
+    all*.exclude group:'com.netease.nimlib:basesdk:6.1.1'
+    all*.exclude group:'com.netease.nimlib:avchat:6.1.1'
+    all*.exclude group:'com.netease.nimlib:lucene:6.1.1'
+}*/
